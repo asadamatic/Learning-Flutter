@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'dart:convert';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:wordtimeapp/Services/WorlTime.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 class LoadingScreen extends StatefulWidget{
-
 
   @override
   State createState() {
@@ -12,43 +12,33 @@ class LoadingScreen extends StatefulWidget{
 
 class _LoadingScreen extends State<LoadingScreen>{
 
-
-  void getData() async{
-    
-    Response response = await get("http://worldtimeapi.org/api/timezone/Asia/Karachi");
-    Map data = jsonDecode(response.body);
-    String datetime = data['datetime'];
-    String offset = data['utc_offset'].substring(1, 3);
-
-    DateTime date = DateTime.parse(datetime);
-    date = date.add(Duration(hours: int.parse(offset)));
-
-    Response europe_response = await get("http://worldtimeapi.org/api/timezone/Europe/London");
-    Map europe_data = jsonDecode(response.body);
-    String europe_datetime = data['datetime'];
-    String europe_offset = data['utc_offset'].substring(1, 3);
-
-    DateTime europe_date = DateTime.parse(datetime);
-    europe_date = date.add(Duration(hours: int.parse(offset)));
-
-    print(date.timeZoneName);
-    print(date.compareTo(europe_date));
-
-    europe_date = europe_date.subtract(Duration(hours: 5));
-
-    print(date.compareTo(europe_date));
-
+  void setTime() async{
+    WorldTime instance = WorldTime(location: 'Pakistan', flag: 'pakistan.png', url: 'Asia/Karachi');
+    await instance.getTime();
+    Navigator.pushReplacementNamed(context, '/home', arguments: {
+      'location' : instance.location,
+      'flag' : instance.flag,
+      'time' : instance.time,
+      'isDayTime': instance.isDayTime
+    });
   }
+
   @override
   void initState() {
     super.initState();
-    getData();
+    setTime();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: Text('Loading Screen')),
+      body: SafeArea(
+          child: Center(
+          child: SpinKitPouringHourglass(
+            color: Colors.blue,
+          )
+          )
+      ),
     );
   }
 }
