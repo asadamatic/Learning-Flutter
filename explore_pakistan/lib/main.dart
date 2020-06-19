@@ -36,18 +36,21 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
 
-  void loadData(){
+  void loadData() async{
 
-    Future.delayed(Duration(seconds: 3)).then((value){
+    Future.delayed(Duration(seconds: 2)).then((value){
+
       Navigator.pushReplacementNamed(context, '/home');
     });
-
   }
+
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     loadData();
   }
+
   @override
   Widget build(BuildContext context) {
 
@@ -72,21 +75,43 @@ class _LoadingScreenState extends State<LoadingScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Image(
-                      image: AssetImage('Assets/quiad_small.png'),
-                      color: Colors.white,
+                    TweenAnimationBuilder(
+                      tween: Tween<double>(begin: 0.5, end: 1.0),
+                      duration: Duration(seconds: 1),
+                      builder: (BuildContext context, double scale, Widget child){
 
+                        return Transform.scale(
+                            scale: scale,
+                            child: Image(
+                            image: AssetImage('Assets/quiad_small.png'),
+                            color: Colors.white,
+                          ),
+                        );
+                      },
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('EXPLORE', style: TextStyle(fontFamily: "Lato", fontSize: 36.0, color: Colors.white, letterSpacing: 1.3),),
-                          Text('PAKISTAN', style: TextStyle(fontFamily: "Lato-Black", fontWeight: FontWeight.bold, fontSize: 36.0, color: Colors.white, letterSpacing: 1.3),),
-                        ],
-                      ),
+
+                    TweenAnimationBuilder(
+                      tween: Tween<double>(begin: 30.0, end: 0.0),
+                      duration: Duration(seconds: 1),
+                      curve: Curves.easeIn,
+                      builder: (BuildContext context, double transform, Widget child){
+
+                        return Transform.translate(
+                          offset: Offset(0.0, transform),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text('EXPLORE', style: TextStyle(fontFamily: "Lato", fontSize: 36.0, color: Colors.white, letterSpacing: 1.3),),
+                                Text('PAKISTAN', style: TextStyle(fontFamily: "Lato-Black", fontWeight: FontWeight.bold, fontSize: 36.0, color: Colors.white, letterSpacing: 1.3),),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     )
+
                   ],
                 ),
               ),
